@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <IncludePath>D:\dev\opencv_lib-4.5.0\vc16\include\opencv2;D:\dev\opencv_lib-4.5.0\vc16\include\</IncludePath>
+    <LibraryPath>D:\dev\opencv_lib-4.5.0\vc16\lib\Release;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>d:\dev\opencv\opencv_lib-4.5.0\vc16\bin\Release</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>opencv_imgproc450.lib;opencv_core450.lib;opencv_imgcodecs450.lib;opencv_stitching450.lib;opencv_dnn450.lib;opencv_ximgproc450.lib;opencv_highgui450.lib;opencv_calib3d450.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>
