@@ -66,6 +66,7 @@ public:
 		LINES_FILTER_FUNC* _width_filter = &LINES_FILTER_NONE,
 		LINES_FILTER_FUNC* _length_filter = &LINES_FILTER_NONE);
 
+
 	const vector<detail::ImageFeatures>& getImagesFeaturesByMatchingPoints() const;
 	const vector<detail::MatchesInfo>& getPairwiseMatchesByMatchingPoints() const;
 	const vector<detail::CameraParams>& getCameraParams() const;
@@ -132,6 +133,9 @@ private:
 		const pair<int, int>& _index_pair,
 		const vector<pair<int, int> >& _pairs) const;
 	/****************/
+
+
+	MultiImages(const string& _file_dir, const string& _file_name, const Mat& image, LINES_FILTER_FUNC* _width_filter, LINES_FILTER_FUNC* _length_filter);
 
 	void doFeatureMatching() const;
 	void initialFeaturePairsSpace() const;

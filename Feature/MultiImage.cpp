@@ -1,6 +1,10 @@
 ﻿
 
 #include "MultiImages.h"
+#include <fstream> 
+#include <algorithm> // For std::sort and std::min
+#include <cmath>     // For std::sqrt
+
 
 MultiImages::MultiImages(const string& _file_dir, const string& _file_name,
 	LINES_FILTER_FUNC* _width_filter,
@@ -861,6 +865,7 @@ const vector<vector<vector<pair<int, int> > > >& MultiImages::getFeaturePairs() 
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i) {
 			const pair<int, int>& match_pair = images_match_graph_pair_list[i];
 			const vector<pair<int, int>>& initial_indices = getInitialFeaturePairs(match_pair);
+			
 			const vector<Point2>& m1_fpts = images_data[match_pair.first].getFeaturePoints();
 			const vector<Point2>& m2_fpts = images_data[match_pair.second].getFeaturePoints();
 			vector<Point2> X, Y;
@@ -876,49 +881,53 @@ const vector<vector<vector<pair<int, int> > > >& MultiImages::getFeaturePairs() 
 
 			assert(result.empty() == false);
 
-			///////////////////////////////////////////////////////////
-			//int row1, row2, col1, col2;
-			//Point2 pt1, pt2;
-			//int ii;
-			//row1 = images_data[match_pair.first].img.rows;
-			//row2 = images_data[match_pair.second].img.rows;
-			//col1 = images_data[match_pair.first].img.cols;
-			//col2 = images_data[match_pair.second].img.cols;
-			////assert(col1 == col2);
-			////Mat showImg(row1 + row2, col1, CV_8UC3, Scalar(0, 255, 0));//其实是2*6的矩阵，因为每个元素有3个通道。
-			////images_data[match_pair.first].img.copyTo(showImg(Rect(0, 0, col1, row1)));
-			////images_data[match_pair.second].img.copyTo(showImg(Rect(0, row1, col2, row2)));
-			////vector<Point2> imgFt1, imgFt2;
-			////imgFt1 = images_data[match_pair.first].getFeaturePoints();
-			////imgFt2 = images_data[match_pair.second].getFeaturePoints();
-			////for (ii = 0; ii < result.size(); ++ii)
-			////{
-			////	pt1 = imgFt1[result[ii].first];
-			////	pt2 = imgFt2[result[ii].second];
-			////	line(showImg, pt1, Point(pt2.x, pt2.y + row1), Scalar(0, 0, 255), 1);
-			////}
-			//assert(row1 == row2);
-			//Mat showImg(row1, col1+col2, CV_8UC3, Scalar(0, 255, 0));//其实是2*6的矩阵，因为每个元素有3个通道。
-			//images_data[match_pair.first].img.copyTo(showImg(Rect(0, 0, col1, row1)));
-			//images_data[match_pair.second].img.copyTo(showImg(Rect(col1, 0, col2, row2)));
-			//vector<Point2> imgFt1, imgFt2;
-			//imgFt1 = images_data[match_pair.first].getFeaturePoints();
-			//imgFt2 = images_data[match_pair.second].getFeaturePoints();
-			//int(rand() * 255);
-			//for (ii = 0; ii < result.size(); ++ii)
-			//{
-			//	pt1 = imgFt1[result[ii].first];
-			//	pt2 = imgFt2[result[ii].second];
-			//	line(showImg, pt1, Point(pt2.x+col1, pt2.y), Scalar(int(double(rand()) / RAND_MAX * 255), int(double(rand()) / RAND_MAX * 255), int(double(rand()) / RAND_MAX * 255)), 1);
-			//}
+			//
+			int row1, row2, col1, col2;
+			Point2 pt1, pt2;
+			int ii;
+			row1 = images_data[match_pair.first].img.rows;
+			row2 = images_data[match_pair.second].img.rows;
+			col1 = images_data[match_pair.first].img.cols;
+			col2 = images_data[match_pair.second].img.cols;
 
-			//char s[1000];
-			//sprintf(s, "z:\\temp1\\%d_%d.jpg", match_pair.first, match_pair.second);
-			//imwrite(s, showImg);
+			/***
+			assert(col1 == col2);
+			Mat showImg(row1 + row2, col1, CV_8UC3, Scalar(0, 255, 0));//其实是2*6的矩阵，因为每个元素有3个通道。
+			images_data[match_pair.first].img.copyTo(showImg(Rect(0, 0, col1, row1)));
+			images_data[match_pair.second].img.copyTo(showImg(Rect(0, row1, col2, row2)));
+			vector<Point2> imgFt1, imgFt2;
+			imgFt1 = images_data[match_pair.first].getFeaturePoints();
+			imgFt2 = images_data[match_pair.second].getFeaturePoints();
+			for (ii = 0; ii < result.size(); ++ii)
+			{
+				pt1 = imgFt1[result[ii].first];
+				pt2 = imgFt2[result[ii].second];
+				line(showImg, pt1, Point(pt2.x, pt2.y + row1), Scalar(0, 0, 255), 1);
+			}
+			assert(row1 == row2);
+			***/
+			Mat showImg(row1, col1+col2, CV_8UC3, Scalar(0, 255, 0));//其实是2*6的矩阵，因为每个元素有3个通道。
+			images_data[match_pair.first].img.copyTo(showImg(Rect(0, 0, col1, row1)));
+			images_data[match_pair.second].img.copyTo(showImg(Rect(col1, 0, col2, row2)));
+			vector<Point2> imgFt1, imgFt2;
+			imgFt1 = images_data[match_pair.first].getFeaturePoints();
+			imgFt2 = images_data[match_pair.second].getFeaturePoints();
+			int(rand() * 255);
+			for (ii = 0; ii < result.size(); ++ii)
+			{
+				pt1 = imgFt1[result[ii].first];
+				pt2 = imgFt2[result[ii].second];
+				line(showImg, pt1, Point(pt2.x+col1, pt2.y), Scalar(int(double(rand()) / RAND_MAX * 255), int(double(rand()) / RAND_MAX * 255), int(double(rand()) / RAND_MAX * 255)), 1);
+			}
 
-			////imshow("test", showImg);
-			////waitKey();
+			char s[1000];
+			sprintf(s, "C:\\Users\\kyy\\Desktop\\test\\GES-GSP_vc16_Modified\\input-data\\temp\\%d_%d.jpg", match_pair.first, match_pair.second);
+			imwrite(s, showImg);
+
+			//imshow("test", showImg);
+			//waitKey();
 			////////////////////////////////////////////////////////////////
+
 
 		}
 		generateRansacDiffWeight(images_match_graph_pair_list);
@@ -926,7 +935,27 @@ const vector<vector<vector<pair<int, int> > > >& MultiImages::getFeaturePairs() 
 	return feature_pairs;
 }
 
+
+struct Match {
+	Point2 pt1;
+	Point2 pt2;
+	double distance;
+
+
+	// Default constructor
+	Match() : pt1(Point2()), pt2(Point2()), distance(0.0) {}
+
+	// Constructor with initialization
+	Match(const Point2& p1, const Point2& p2)
+		: pt1(p1), pt2(p2), distance(std::sqrt(std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2))) {}
+};
+
+
 const vector<vector<vector<Point2> > >& MultiImages::getFeatureMatches() const {
+	//mmm
+	static int N = 1000;  // Define a static variable N to control the number of matches to keep
+	static double max_distance_threshold = 1000.0;  // Define a distance threshold
+
 	if (feature_matches.empty()) {
 		const vector<vector<vector<pair<int, int> > > >& feature_pairs = getFeaturePairs();
 		const vector<pair<int, int> >& images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
@@ -934,6 +963,14 @@ const vector<vector<vector<Point2> > >& MultiImages::getFeatureMatches() const {
 		for (int i = 0; i < images_data.size(); ++i) {
 			feature_matches[i].resize(images_data.size());
 		}
+
+		std::ofstream output_file("feature_matches.txt");  // Open in append mode
+
+		if (!output_file.is_open()) {
+			std::cerr << "Unable to open file for writing.\n";
+			return feature_matches;
+		}
+
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i) {
 			const pair<int, int>& match_pair = images_match_graph_pair_list[i];
 			const int& m1 = match_pair.first, & m2 = match_pair.second;
@@ -941,11 +978,53 @@ const vector<vector<vector<Point2> > >& MultiImages::getFeatureMatches() const {
 			feature_matches[m2][m1].reserve(feature_pairs[m1][m2].size());
 			const vector<Point2>& m1_fpts = images_data[m1].getFeaturePoints();
 			const vector<Point2>& m2_fpts = images_data[m2].getFeaturePoints();
+
+			// Create a vector to store matches with their distances
+			vector<Match> matches;
+			matches.reserve(feature_pairs[m1][m2].size());
+
 			for (int j = 0; j < feature_pairs[m1][m2].size(); ++j) {
-				feature_matches[m1][m2].emplace_back(m1_fpts[feature_pairs[m1][m2][j].first]);
-				feature_matches[m2][m1].emplace_back(m2_fpts[feature_pairs[m1][m2][j].second]);
+				Match match(m1_fpts[feature_pairs[m1][m2][j].first], m2_fpts[feature_pairs[m1][m2][j].second]);
+
+				// Only keep the match if the distance is below the threshold
+				if (match.distance <= max_distance_threshold) {
+					matches.push_back(match);
+				}
 			}
+
+			// Sort matches by distance
+			std::sort(matches.begin(), matches.end(), [](const Match& a, const Match& b) {
+				return a.distance < b.distance;
+				});
+
+			// Keep only the top N shortest matches
+			int num_to_keep = std::min(N, static_cast<int>(matches.size()));
+			matches.resize(num_to_keep);
+
+			// Calculate the average distance based only on the kept pairs
+			double total_distance = 0.0;
+			for (int j = 0; j < num_to_keep; ++j) {
+				total_distance += matches[j].distance;
+			}
+			double average_distance = (num_to_keep > 0) ? (total_distance / num_to_keep) : 0.0;
+
+			// Store the top N matches in feature_matches
+			for (const auto& match : matches) {
+				feature_matches[m1][m2].emplace_back(match.pt1);
+				feature_matches[m2][m1].emplace_back(match.pt2);
+			}
+
+			// Save the feature matches with distances to the text file
+			output_file << "Feature Matches between Image " << m1 << " and Image " << m2 << " (Top " << N << " shortest matches, Distance <= " << max_distance_threshold << "):\n";
+			for (int j = 0; j < matches.size(); ++j) {
+				const Point2& pt1 = matches[j].pt1;
+				const Point2& pt2 = matches[j].pt2;
+				output_file << "Match " << j + 1 << ": (" << pt1.x << ", " << pt1.y << ") <--> (" << pt2.x << ", " << pt2.y << ") "
+					<< "Distance: " << matches[j].distance << "\n";
+			}
+			output_file << "Average Distance: " << average_distance << "\n\n";
 		}
+		output_file.close();  // Close the file
 	}
 	return feature_matches;
 }
@@ -1022,6 +1101,26 @@ vector<pair<int, int> > MultiImages::getFeaturePairsBySequentialRANSAC(const pai
 #ifndef DP_NO_LOG
 	cout << "Global true Probabiltiy = " << result.size() / (float)_initial_indices.size() << endl;
 #endif
+
+
+	// Save the result to a text file
+	std::ofstream output_file("ransac_feature_pairs.txt", std::ios::app);  // Open in append mode
+	if (output_file.is_open()) {
+		output_file << "RANSAC Feature Pairs for Image Pair (" << _match_pair.first << ", " << _match_pair.second << "):\n";
+		for (const auto& pair : result) {
+			output_file << "Pair: (" << pair.first << ", " << pair.second << ")\n";
+		}
+		output_file << "RANSAC Average Difference: " << ransacDst << "\n";
+		output_file << "Global true Probability = " << result.size() / (float)_initial_indices.size() << "\n";
+		output_file << "\n";
+		output_file.close();  // Close the file
+	}
+	else {
+		std::cerr << "Unable to open file for writing.\n";
+	}
+
+
+
 	return result;
 }
 
@@ -1129,6 +1228,7 @@ bool compareFeaturePair(const FeatureDistance& fd_1, const FeatureDistance& fd_2
 		(fd_1.feature_index[0] < fd_2.feature_index[0]);
 }
 
+/***
 vector<pair<int, int> > MultiImages::getInitialFeaturePairs(const pair<int, int>& _match_pair) const {
 	const int nearest_size = 2, pair_count = 1;
 	const bool ratio_test = true, intersect = true;
@@ -1214,6 +1314,125 @@ vector<pair<int, int> > MultiImages::getInitialFeaturePairs(const pair<int, int>
 	}
 	return initial_indices;
 }
+***/
+
+vector<pair<int, int> > MultiImages::getInitialFeaturePairs(const pair<int, int>& _match_pair) const {
+	const int nearest_size = 2, pair_count = 1;
+	const bool ratio_test = true, intersect = true;
+
+	assert(nearest_size > 0);
+
+	const int feature_size_1 = (int)images_data[_match_pair.first].getFeaturePoints().size();
+	const int feature_size_2 = (int)images_data[_match_pair.second].getFeaturePoints().size();
+	const int PAIR_COUNT = 2;
+	const int feature_size[PAIR_COUNT] = { feature_size_1, feature_size_2 };
+	const int pair_match[PAIR_COUNT] = { _match_pair.first , _match_pair.second };
+
+	vector<FeatureDistance> feature_pairs[PAIR_COUNT];
+
+	for (int p = 0; p < pair_count; ++p) {
+		const int another_feature_size = feature_size[1 - p];
+
+		const int nearest_k = min(nearest_size, another_feature_size);
+		const vector<FeatureDescriptor>& feature_descriptors_1 = images_data[pair_match[p]].getFeatureDescriptors();
+		const vector<FeatureDescriptor>& feature_descriptors_2 = images_data[pair_match[!p]].getFeatureDescriptors();
+
+		for (int f1 = 0; f1 < feature_size[p]; ++f1) {
+			set<FeatureDistance> feature_distance_set;
+			feature_distance_set.insert(FeatureDistance(FLT_MAX, p, -1, -1));
+			for (int f2 = 0; f2 < feature_size[!p]; ++f2) {
+				const double dist = FeatureDescriptor::getDistance(feature_descriptors_1[f1], feature_descriptors_2[f2], feature_distance_set.begin()->distance);
+				if (dist < feature_distance_set.begin()->distance) {
+					if (feature_distance_set.size() == nearest_k) {
+						feature_distance_set.erase(feature_distance_set.begin());
+					}
+					feature_distance_set.insert(FeatureDistance(dist, p, f1, f2));
+				}
+			}
+			set<FeatureDistance>::const_iterator it = feature_distance_set.begin();
+			if (ratio_test && feature_distance_set.size() >= 2) {
+				const set<FeatureDistance>::const_iterator it2 = std::next(it, 1);
+				if (nearest_k == nearest_size &&
+					it2->distance * FEATURE_RATIO_TEST_THRESHOLD > it->distance) {
+					continue;
+				}
+				it = it2;
+			}
+			feature_pairs[p].insert(feature_pairs[p].end(), it, feature_distance_set.end());
+		}
+	}
+	vector<FeatureDistance> feature_pairs_result;
+	if (pair_count == PAIR_COUNT) {
+		sort(feature_pairs[0].begin(), feature_pairs[0].end(), compareFeaturePair);
+		sort(feature_pairs[1].begin(), feature_pairs[1].end(), compareFeaturePair);
+		if (intersect) {
+			set_intersection(feature_pairs[0].begin(), feature_pairs[0].end(),
+				feature_pairs[1].begin(), feature_pairs[1].end(),
+				std::inserter(feature_pairs_result, feature_pairs_result.begin()),
+				compareFeaturePair);
+		}
+		else {
+			set_union(feature_pairs[0].begin(), feature_pairs[0].end(),
+				feature_pairs[1].begin(), feature_pairs[1].end(),
+				std::inserter(feature_pairs_result, feature_pairs_result.begin()),
+				compareFeaturePair);
+		}
+	}
+	else {
+		feature_pairs_result = std::move(feature_pairs[0]);
+	}
+
+	vector<double> distances;
+	distances.reserve(feature_pairs_result.size());
+	for (int i = 0; i < feature_pairs_result.size(); ++i) {
+		distances.emplace_back(feature_pairs_result[i].distance);
+	}
+	double mean, std;
+	Statistics::getMeanAndSTD(distances, mean, std);
+
+	const double OUTLIER_THRESHOLD = (INLIER_TOLERANT_STD_DISTANCE * std) + mean;
+	vector<pair<int, int> > initial_indices;
+	initial_indices.reserve(feature_pairs_result.size());
+	for (int i = 0; i < feature_pairs_result.size(); ++i) {
+		if (feature_pairs_result[i].distance < OUTLIER_THRESHOLD) {
+			initial_indices.emplace_back(feature_pairs_result[i].feature_index[0],
+				feature_pairs_result[i].feature_index[1]);
+		}
+	}
+
+	// Save feature_pairs_result and initial_indices to a text file
+	std::ofstream output_file("feature_pairs_and_indices.txt");
+
+	if (output_file.is_open()) {
+		output_file << "Number of Feature Pairs:\n";
+		output_file << feature_pairs_result.size() << "\n";
+
+		output_file << "Number of initial indices:\n";
+		output_file << initial_indices.size() << "\n";
+
+
+		output_file << "Feature Pairs Results:\n";
+		for (const auto& feature_pair : feature_pairs_result) {
+			output_file << feature_pair.feature_index[0] << " " << feature_pair.feature_index[1] << " " << feature_pair.distance << "\n";
+		}
+
+		output_file << "\nInitial Indices:\n";
+		for (const auto& index_pair : initial_indices) {
+			output_file << index_pair.first << " " << index_pair.second << "\n";
+		}
+
+		output_file.close();  // Close the file
+	}
+	else {
+		std::cerr << "Unable to open file for writing.\n";
+	}
+
+	return initial_indices;
+}
+
+
+
+
 
 Mat MultiImages::textureMapping(const vector<vector<Point2> >& _vertices,
 	const Size2& _target_size,
@@ -1323,7 +1542,7 @@ Mat MultiImages::textureMapping(const vector<vector<Point2> >& _vertices,
 			imwrite(parameter.debug_dir + parameter.file_name + images_data[i].file_name + "_[GSP]_item_wraping.png", image);
 		}
 		else {
-			imwrite(parameter.debug_dir + parameter.file_name + images_data[i].file_name + "_[Ours]_item_wraping.png", image);
+			//imwrite(parameter.debug_dir + parameter.file_name + images_data[i].file_name + "_[Ours]_item_wraping.png", image);
 		}
 
 	}
@@ -1389,6 +1608,23 @@ const vector<vector<vector<Point2> > >& MultiImages::getTwoImgFeatureMatches(pai
 		feature_matches[m1][m2].emplace_back(m1_fpts[feature_pair_[j].first]);
 		feature_matches[m2][m1].emplace_back(m2_fpts[feature_pair_[j].second]);
 	}
+	std::ofstream output_file("two_img_feature_matches.txt", std::ios::app);  // Open in append mode
+
+	if (output_file.is_open()) {
+		output_file << "Feature Matches between Image " << m1 << " and Image " << m2 << ":\n";
+		for (int j = 0; j < feature_matches[m1][m2].size(); ++j) {
+			const Point2& pt1 = feature_matches[m1][m2][j];
+			const Point2& pt2 = feature_matches[m2][m1][j];
+			output_file << "Match " << j + 1 << ": (" << pt1.x << ", " << pt1.y << ") <--> (" << pt2.x << ", " << pt2.y << ")\n";
+		}
+		output_file << "\n";
+		output_file.close();  // Close the file
+	}
+	else {
+		std::cerr << "Unable to open file for writing.\n";
+	}
+
+
 	return feature_matches;
 }
 
@@ -1413,6 +1649,21 @@ vector<pair<int, int>> MultiImages::getTwoImgFeaturePairs(pair<int, int> _mask_p
 	}
 	vector<pair<int, int> > result;
 	result = getFeaturePairsBySequentialRANSAC(_mask_pair_, X, Y, initial_indices);
+
+	std::ofstream output_file("two_img_feature_pairs_result.txt", std::ios::app);  // Open in append mode
+
+	if (output_file.is_open()) {
+		output_file << "Feature Pairs between Image " << _mask_pair_.first << " and Image " << _mask_pair_.second << ":\n";
+		for (const auto& pair : result) {
+			output_file << "Pair: (" << pair.first << ", " << pair.second << ")\n";
+		}
+		output_file << "\n";
+		output_file.close();  // Close the file
+	}
+	else {
+		std::cerr << "Unable to open file for writing.\n";
+	}
+
 
 	return  result;
 }

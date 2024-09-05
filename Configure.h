@@ -60,8 +60,12 @@ const double APAP_GAMMA = 0.0015;
 const double APAP_SIGMA = 8.5;
 
 /*** matching method ***/
+//初步筛选特征点，值越大，越严格，匹配点越少
+//d1*ratio < d2, 则保留
 const string FEATURE_RATIO_TEST_THRESHOLD_STRING = "15e-1";//15*10^-1=1.5
-const double FEATURE_RATIO_TEST_THRESHOLD = atof(FEATURE_RATIO_TEST_THRESHOLD_STRING.c_str());
+
+//
+const double FEATURE_RATIO_TEST_THRESHOLD = atof(FEATURE_RATIO_TEST_THRESHOLD_STRING.c_str());//
 
 /*** homography based ***/
 const double GLOBAL_HOMOGRAPHY_MAX_INLIERS_DIST = 5.;	// 5
@@ -75,6 +79,7 @@ const double SIFT_PEAK_THRESH = 0.;
 const double SIFT_EDGE_THRESH = 10.;
 
 /*** init feature ***/
+//得到匹配点对之后，计算描述子距离，计算距离的均值和标准方差std，生成阈值
 const double INLIER_TOLERANT_STD_DISTANCE = 4.25; /* mean + 4.25 * std */
 
 /*** sRANSAC ***/

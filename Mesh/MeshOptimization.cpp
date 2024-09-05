@@ -264,13 +264,31 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double> >& _triplets
 									-local_similarity_weight * L_W.at<double>(dim, DIMENSION_2D * p + xy));
 							}
 							if (global_similarity_term) {
+
+								double weight = _global_similarity_weight;
+								double sim = similarity[dim];
+
+								// Check for NaN or Inf in weight and sim
+								if (std::isnan(weight) || std::isinf(weight)) {
+									//1
+									weight = 1; // or some other safe default value
+								}
+
+								if (std::isnan(sim) || std::isinf(sim)) {
+									//1
+									sim = 1; // or some other safe default value
+								}
+
+
+
+
 								_triplets.emplace_back(global_similarity_equation.first + eq_count + dim,
 									images_vertices_start_index[i] + DIMENSION_2D * (*it) + xy,
-									_global_similarity_weight * G_W.at<double>(dim, DIMENSION_2D * p + xy));
+									weight * G_W.at<double>(dim, DIMENSION_2D * p + xy));
 								_triplets.emplace_back(global_similarity_equation.first + eq_count + dim,
 									images_vertices_start_index[i] + DIMENSION_2D * ind_e1 + xy,
-									-_global_similarity_weight * G_W.at<double>(dim, DIMENSION_2D * p + xy));
-								_b_vector.emplace_back(global_similarity_equation.first + eq_count + dim, _global_similarity_weight * similarity[dim]);
+									-weight * G_W.at<double>(dim, DIMENSION_2D * p + xy));
+								_b_vector.emplace_back(global_similarity_equation.first + eq_count + dim, weight * sim);
 							}
 						}
 					}

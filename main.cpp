@@ -3,7 +3,6 @@
 #include <iostream>
 #include "./Stitching/NISwGSP_Stitching.h"
 #include "./Debugger/TimeCalculator.h"
-#include <opencv2/opencv.hpp>
 
 using namespace std;
 
@@ -18,13 +17,19 @@ int main(int argc, const char* argv[]) {
 
 
 	string base_path = "C:/Users/kyy/Desktop/test/GES-GSP_vc16_modified/input-data/";
-	string img_file[] = {"f03700" };
+	string img_file[] = { "g3" };
+	//624 623 621 371 373 374
+	// //{ "624","623", "621", "371", "373", "374"};
+	//	string img_file[] = { "f03700","f03701", "f03702", "f03703", "f03704", "f03705", "f03706", "f03707", "f03708", "f03709", "f03710"};
+	//f03700 f03701 f03702 f03703 f03704 f03705 f03706 f03707 f03708 f03709 f03010
 
 	int file_num = sizeof(img_file) / sizeof(img_file[0]);
 	time_t start = clock();
 	TimeCalculator timer;
+
 	for (int i = 0; i < file_num; ++i) {
 		cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;
+
 		MultiImages multi_images(base_path, img_file[i], LINES_FILTER_WIDTH, LINES_FILTER_LENGTH);
 
 		/* 2D */
@@ -43,6 +48,7 @@ int main(int argc, const char* argv[]) {
 		}
 		time_t end = clock();
 		cout << "Time:" << double(end - start) / CLOCKS_PER_SEC << endl;
+
 		niswgsp.writeImage(blend_linear, BLENDING_METHODS_NAME[BLEND_LINEAR]);
 		niswgsp.assessment(original_vertices);
 	}

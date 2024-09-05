@@ -28,6 +28,9 @@ public:
 		vector<Point2>& _feature_points,
 		vector<FeatureDescriptor>& _feature_descriptors);
 
+	int static detectAndCount(const Mat& _grey_img, vector<Point2>& _feature_points, vector<FeatureDescriptor>& _feature_descriptors);
+	int static matchFeatures(const vector<FeatureDescriptor>& descriptors1, const vector<FeatureDescriptor>& descriptors2, vector<std::pair<int, int>>& matches);
+	void static saveCountsToFile(const std::string& filename, const std::string& content);
 private:
 };
 
