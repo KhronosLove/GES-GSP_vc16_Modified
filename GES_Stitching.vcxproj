@@ -26,10 +26,13 @@
     <ClCompile Include="Feature\FeatureController.cpp" />
     <ClCompile Include="Feature\ImageData.cpp" />
     <ClCompile Include="Feature\MultiImage.cpp" />
+    <ClCompile Include="ImageCropper.cpp" />
     <ClCompile Include="lsd.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh\MeshGrid.cpp" />
     <ClCompile Include="Mesh\MeshOptimization.cpp" />
+    <ClCompile Include="pre.cpp" />
+    <ClCompile Include="ImageRenamer.cpp" />
     <ClCompile Include="Stitching\APAP_Stitching.cpp" />
     <ClCompile Include="Stitching\NISwGSP_Stitching.cpp" />
     <ClCompile Include="Stitching\Parameter.cpp" />
@@ -51,11 +54,14 @@
     <ClInclude Include="Feature\FeatureController.h" />
     <ClInclude Include="Feature\ImageData.h" />
     <ClInclude Include="Feature\MultiImages.h" />
+    <ClInclude Include="ImageCropper.h" />
     <ClInclude Include="Mesh\Mesh2D.cpp" />
     <ClInclude Include="Mesh\Mesh2D.h" />
     <ClInclude Include="Mesh\MeshGrid.h" />
     <ClInclude Include="Mesh\MeshOptimization.h" />
     <ClInclude Include="model\CropLayer.h" />
+    <ClInclude Include="pre.h" />
+    <ClInclude Include="ImageRenamer.h" />
     <ClInclude Include="Stitching\APAP_Stitching.h" />
     <ClInclude Include="Stitching\NISwGSP_Stitching.h" />
     <ClInclude Include="Stitching\Parameter.h" />
@@ -142,8 +148,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>d:\dev\gdal-master\build\include;$(IncludePath);D:\dev\proj-9.1.0\src</IncludePath>
-    <LibraryPath>d:\dev\gdal-master\build\lib;$(LibraryPath);D:\dev\proj-9.1.0\build\bin\Debug;D:\dev\proj-9.1.0\build\bin\Release</LibraryPath>
+    <IncludePath>F:\miniconda3\envs\csc\Lib\site-packages\skimage;F:\miniconda3\envs\csc\Lib\site-packages\scipy;F:\miniconda3\envs\csc\Lib\site-packages\pywt;F:\miniconda3\envs\csc\Lib\site-packages\pkg_resources;F:\miniconda3\envs\csc\Lib\site-packages\packaging;F:\miniconda3\envs\csc\Lib\site-packages\numpy;F:\miniconda3\envs\csc\Lib\site-packages\networkx;F:\miniconda3\envs\csc\Lib\site-packages\kornia;F:\miniconda3\envs\csc\Lib\site-packages\imageio;F:\miniconda3\envs\csc\Lib\site-packages\caffe2;F:\miniconda3\envs\csc\Lib\site-packages\certifi;F:\miniconda3\envs\csc\Lib\site-packages\PIL;F:\miniconda3\envs\csc\Lib\site-packages\tensorboardX;F:\miniconda3\envs\csc\Lib\site-packages\torchvision;F:\miniconda3\envs\csc\Lib\site-packages\torch;F:\miniconda3\envs\csc\include;d:\dev\gdal-master\build\include;$(IncludePath);D:\dev\proj-9.1.0\src</IncludePath>
+    <LibraryPath>d:\dev\gdal-master\build\lib;$(LibraryPath);D:\dev\proj-9.1.0\build\bin\Debug;D:\dev\proj-9.1.0\build\bin\Release;F:\miniconda3\envs\csc\libs</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -197,16 +203,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>F:\miniconda3\envs\csc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gdal.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gdal.lib;%(AdditionalDependencies);python37.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\miniconda3\envs\csc\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

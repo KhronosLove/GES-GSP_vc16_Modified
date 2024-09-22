@@ -1,9 +1,12 @@
-﻿
-
+﻿//new
 #include <iostream>
 #include "./Stitching/NISwGSP_Stitching.h"
 #include "./Debugger/TimeCalculator.h"
-
+#include <opencv2/opencv.hpp>
+#include <Python.h>
+#include "pre.h"
+#include "ImageRenamer.h"
+#include "ImageCropper.h"
 using namespace std;
 
 int GRID_SIZE_w = 40;
@@ -15,41 +18,51 @@ int main(int argc, const char* argv[]) {
 	cout << "nThreads = " << Eigen::nbThreads() << endl;
 	cout << "[#Images : " << argc - 1 << "]" << endl;
 
+	string base_path = "C:/Users/kyy/Desktop/GES-GSP_vc16_modified/input-data/";
 
-	string base_path = "C:/Users/kyy/Desktop/test/GES-GSP_vc16_modified/input-data/";
-	string img_file[] = { "g3" };
-	//624 623 621 371 373 374
-	// //{ "624","623", "621", "371", "373", "374"};
-	//	string img_file[] = { "f03700","f03701", "f03702", "f03703", "f03704", "f03705", "f03706", "f03707", "f03708", "f03709", "f03710"};
-	//f03700 f03701 f03702 f03703 f03704 f03705 f03706 f03707 f03708 f03709 f03010
+	string img_file[] = { "fused" };
+
+
+	std::string input_path = "C:/Users/kyy/Desktop/GES-GSP_vc16_Modified/input-data/original/";
+	std::string output_path = "C:/Users/kyy/Desktop/GES-GSP_vc16_Modified/input-data/fused/";
+
+	fuse_images(input_path, output_path);
+
+	ImageRenamer imageRenamer(output_path);
+	imageRenamer.renameAndProcessImages();
+
+	ImageCropper imageCropper(output_path);
+	imageCropper.cropImages();
 
 	int file_num = sizeof(img_file) / sizeof(img_file[0]);
+
+
 	time_t start = clock();
-	TimeCalculator timer;
+	timecalculator timer;
 
 	for (int i = 0; i < file_num; ++i) {
-		cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;
+		cout << "i = " << i << ", [images : " << argv[i] << "]" << endl;
 
-		MultiImages multi_images(base_path, img_file[i], LINES_FILTER_WIDTH, LINES_FILTER_LENGTH);
+		multiimages multi_images(base_path, img_file[i], lines_filter_width, lines_filter_length);
 
-		/* 2D */
-		NISwGSP_Stitching niswgsp(multi_images);
-		niswgsp.setWeightToAlignmentTerm(1);
-		niswgsp.setWeightToLocalSimilarityTerm(0.75);
-		niswgsp.setWeightToGlobalSimilarityTerm(6, 20, GLOBAL_ROTATION_2D_METHOD);
-		niswgsp.setWeightToContentPreservingTerm(1.5);
-		Mat blend_linear;
-		vector<vector<Point2> > original_vertices;
-		if (RUN_TYPE == 1) {
-			blend_linear = niswgsp.solve_content(BLEND_LINEAR, original_vertices);
+		/* 2d */
+		niswgsp_stitching niswgsp(multi_images);
+		niswgsp.setweighttoalignmentterm(1);
+		niswgsp.setweighttolocalsimilarityterm(0.75);
+		niswgsp.setweighttoglobalsimilarityterm(6, 20, global_rotation_2d_method);
+		niswgsp.setweighttocontentpreservingterm(1.5);
+		mat blend_linear;
+		vector<vector<point2> > original_vertices;
+		if (run_type == 1) {
+			blend_linear = niswgsp.solve_content(blend_linear, original_vertices);
 		}
 		else {
-			blend_linear = niswgsp.solve(BLEND_LINEAR, original_vertices);
+			blend_linear = niswgsp.solve(blend_linear, original_vertices);
 		}
 		time_t end = clock();
-		cout << "Time:" << double(end - start) / CLOCKS_PER_SEC << endl;
+		cout << "time:" << double(end - start) / clocks_per_sec << endl;
 
-		niswgsp.writeImage(blend_linear, BLENDING_METHODS_NAME[BLEND_LINEAR]);
+		niswgsp.writeimage(blend_linear, blending_methods_name[blend_linear]);
 		niswgsp.assessment(original_vertices);
 	}
 

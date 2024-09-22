@@ -34,6 +34,9 @@
     <Filter Include="源文件\Test">
       <UniqueIdentifier>{26765cb5-f503-4e2e-b45d-409bc09d7e6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\preprocess">
+      <UniqueIdentifier>{f6b36fb6-a647-4c3a-b63d-3f5dc744e8a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debugger\ColorMap.cpp">
@@ -98,6 +101,15 @@
     </ClCompile>
     <ClCompile Include="lsd.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pre.cpp">
+      <Filter>源文件\preprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRenamer.cpp">
+      <Filter>源文件\preprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCropper.cpp">
+      <Filter>源文件\preprocess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +184,15 @@
     </ClInclude>
     <ClInclude Include="dirent.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pre.h">
+      <Filter>源文件\preprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenamer.h">
+      <Filter>源文件\preprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCropper.h">
+      <Filter>源文件\preprocess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
