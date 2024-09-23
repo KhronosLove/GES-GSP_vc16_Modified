@@ -26,7 +26,7 @@ int main(int argc, const char* argv[]) {
 	std::string input_path = "C:/Users/kyy/Desktop/GES-GSP_vc16_Modified/input-data/original/";
 	std::string output_path = "C:/Users/kyy/Desktop/GES-GSP_vc16_Modified/input-data/fused/";
 
-	fuse_images(input_path, output_path);
+	//fuse_images(input_path, output_path);
 
 	ImageRenamer imageRenamer(output_path);
 	imageRenamer.renameAndProcessImages();
@@ -38,33 +38,32 @@ int main(int argc, const char* argv[]) {
 
 
 	time_t start = clock();
-	timecalculator timer;
+	TimeCalculator timer;
 
 	for (int i = 0; i < file_num; ++i) {
-		cout << "i = " << i << ", [images : " << argv[i] << "]" << endl;
+		cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;
+		MultiImages multi_images(base_path, img_file[i], LINES_FILTER_WIDTH, LINES_FILTER_LENGTH);
 
-		multiimages multi_images(base_path, img_file[i], lines_filter_width, lines_filter_length);
-
-		/* 2d */
-		niswgsp_stitching niswgsp(multi_images);
-		niswgsp.setweighttoalignmentterm(1);
-		niswgsp.setweighttolocalsimilarityterm(0.75);
-		niswgsp.setweighttoglobalsimilarityterm(6, 20, global_rotation_2d_method);
-		niswgsp.setweighttocontentpreservingterm(1.5);
-		mat blend_linear;
-		vector<vector<point2> > original_vertices;
-		if (run_type == 1) {
-			blend_linear = niswgsp.solve_content(blend_linear, original_vertices);
+		/* 2D */
+		NISwGSP_Stitching niswgsp(multi_images);
+		niswgsp.setWeightToAlignmentTerm(1);
+		niswgsp.setWeightToLocalSimilarityTerm(0.75);
+		niswgsp.setWeightToGlobalSimilarityTerm(6, 20, GLOBAL_ROTATION_2D_METHOD);
+		niswgsp.setWeightToContentPreservingTerm(1.5);
+		Mat blend_linear;
+		vector<vector<Point2> > original_vertices;
+		if (RUN_TYPE == 1) {
+			blend_linear = niswgsp.solve_content(BLEND_LINEAR, original_vertices);
 		}
 		else {
-			blend_linear = niswgsp.solve(blend_linear, original_vertices);
+			blend_linear = niswgsp.solve(BLEND_LINEAR, original_vertices);
 		}
 		time_t end = clock();
-		cout << "time:" << double(end - start) / clocks_per_sec << endl;
-
-		niswgsp.writeimage(blend_linear, blending_methods_name[blend_linear]);
+		cout << "Time:" << double(end - start) / CLOCKS_PER_SEC << endl;
+		niswgsp.writeImage(blend_linear, BLENDING_METHODS_NAME[BLEND_LINEAR]);
 		niswgsp.assessment(original_vertices);
 	}
+
 
 
 	return 0;
