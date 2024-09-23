@@ -23,3 +23,17 @@ if __name__ == "__main__":
     net.load_state_dict(torch.load('./model/best_net.pth'))
     test(net, loader['HDRPS'],  save_path)
 
+if __name__ == "__main__":
+    act = 'sst'
+    num_blocks = 4
+
+    # testset loaders
+    testset4          = FolderDataset('test',None)
+    testloader4       = DataLoader(testset4,       batch_size=1)
+    
+    loader = {'HDRPS': testloader4}
+    
+    save_path = r'result'
+    net = CSC_Fusion_MEF(act=act,num_blocks=num_blocks).cuda()
+    net.load_state_dict(torch.load('C:/Users/kyy/Desktop/GES-GSP_vc16_Modified/CSC-MEFN/model/best_net.pth'))
+    test(net, loader['HDRPS'],  save_path, 'HDRPS')
